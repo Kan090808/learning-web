@@ -212,13 +212,14 @@ export default function LearningEngine() {
   const [typingMsg, setTypingMsg] = useState(null);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem("openrouter_api_key") || null);
   const [showApiModal, setShowApiModal] = useState(false);
-  const [vocab, setVocab] = useState([]);
+  const [vocab, setVocab] = useState(() => { try { return JSON.parse(localStorage.getItem("vocab") || "[]"); } catch { return []; } });
   const [flashIndex, setFlashIndex] = useState(0);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
   const { speak, playingId } = useTTS();
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, typingMsg]);
+  useEffect(() => { localStorage.setItem("vocab", JSON.stringify(vocab)); }, [vocab]);
 
   const addWord = (v) => setVocab((prev) => prev.some((w) => w.word === v.word) ? prev : [...prev, v]);
   const removeWord = (word) => setVocab((prev) => prev.filter((w) => w.word !== word));
