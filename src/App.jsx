@@ -183,7 +183,7 @@ function ApiModal({ currentKey, onSave, onClose }) {
         <input type="password" placeholder="sk-or-v1-..." value={val} onChange={(e) => setVal(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && val.trim() && onSave(val.trim())}
           style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "2px solid #E0DFF8", borderRadius: 10, outline: "none", color: "#1A1A2E", marginBottom: 14, fontFamily: "monospace" }} />
-        <div style={{ fontSize: 11, color: "#bbb", marginBottom: 16 }}>Key 只存在瀏覽器記憶體，不會上傳至任何伺服器</div>
+        <div style={{ fontSize: 11, color: "#bbb", marginBottom: 16 }}>Key 儲存在瀏覽器 localStorage，不會上傳至任何伺服器</div>
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={() => val.trim() && onSave(val.trim())}
             style={{ flex: 1, padding: 12, background: "#6C63FF", color: "#fff", border: "none", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14 }}>
@@ -211,7 +211,7 @@ export default function LearningEngine() {
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [typingMsg, setTypingMsg] = useState(null);
-  const [apiKey, setApiKey] = useState(null);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("openrouter_api_key") || null);
   const [showApiModal, setShowApiModal] = useState(false);
   const [vocab, setVocab] = useState([]);
   const [flashIndex, setFlashIndex] = useState(0);
@@ -298,7 +298,7 @@ export default function LearningEngine() {
   if (step === "vocab") return (
     <div style={{ minHeight: "100vh", background: "#F7F6F3", fontFamily: "'Noto Sans TC','Inter',sans-serif", display: "flex", flexDirection: "column", alignItems: "center" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
-      {showApiModal && <ApiModal currentKey={apiKey} onSave={(k) => { setApiKey(k); setShowApiModal(false); }} onClose={() => setShowApiModal(false)} />}
+      {showApiModal && <ApiModal currentKey={apiKey} onSave={(k) => { setApiKey(k); k ? localStorage.setItem("openrouter_api_key", k) : localStorage.removeItem("openrouter_api_key"); setShowApiModal(false); }} onClose={() => setShowApiModal(false)} />}
       <Header showBack />
       <div style={{ width: "100%", maxWidth: 520, padding: "36px 24px" }}>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1A1A2E", marginBottom: 4 }}>📖 我的單字庫</h2>
@@ -346,7 +346,7 @@ export default function LearningEngine() {
         .mcard:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,99,255,0.12)}
       `}</style>
 
-      {showApiModal && <ApiModal currentKey={apiKey} onSave={(k) => { setApiKey(k); setShowApiModal(false); }} onClose={() => setShowApiModal(false)} />}
+      {showApiModal && <ApiModal currentKey={apiKey} onSave={(k) => { setApiKey(k); k ? localStorage.setItem("openrouter_api_key", k) : localStorage.removeItem("openrouter_api_key"); setShowApiModal(false); }} onClose={() => setShowApiModal(false)} />}
 
       <Header showVocab={step === "chat"} showBack={step !== "home"} />
 
